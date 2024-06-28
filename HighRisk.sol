@@ -16,12 +16,15 @@ contract Kuwatakushi is BasePlayer {
     }
 
     function queryBestQuoteSwapPath() private view returns (SwapSell[] memory BestQuoteSwapPath) {
+        PlayerBundle memory bundle;
+        bundle.swaps = new SwapSell[](MAX_SWAPS_PER_BUNDLE);
+        
         uint256 index;
-        for (uint8 idx; i < ASSET_COUNT; ++i) {
+        for (uint8 assetIdx; assetIdx < ASSET_COUNT; ++assetIdx) {
             if (assetIdx != GOLD_IDX) {
                 uint256 balanceOf = GAME.balanceOf(PLAYER_IDX, assetIdx);
                 bundle.swaps[index++] = SwapSell({
-                    fromAssetIdx: idx,
+                    fromAssetIdx: assetIdx,
                     toAssetIdx: GOLD_IDX,
                     fromAmount: balanceOf
                 });
@@ -49,7 +52,7 @@ contract Kuwatakushi is BasePlayer {
             toAssetIdx: bestSwapAssetIdx,
             fromAmount: GAME.balanceOf(PLAYER_IDX, GOLD_IDX)
         });
-        
+
         bundle.swaps[index++] = SwapSell({
             fromAssetIdx: bestSwapAssetIdx,
             toAssetIdx: GOLD_IDX,
